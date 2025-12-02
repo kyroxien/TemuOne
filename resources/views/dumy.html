@@ -77,7 +77,6 @@
             font-size: 15px;
             font-weight: 500;
             transition: 0.25s;
-            text-decoration: none;
         }
 
         .btn-primary:hover {
@@ -120,30 +119,22 @@
 
         <div class="hero-text">
             <h1>TemuOne</h1>
-            <h2>Sistem Informasi Lost & Found</h2>
+            <h2>Sistem Informasi Kehilangan Barang</h2>
 
             <p>
                 Platform resmi untuk pelaporan kehilangan dan penemuan barang di lingkungan
-                Kampus UIN Datokarama Palu.Dengan sistem yang terpusat,
-                pelaporan dan pencarian barang lebih mudah dan cepat.
+                Kampus UIN Datokarama Palu. Dengan sistem yang terpusat, Anda dapat melakukan
+                pelaporan dan pencarian barang secara lebih mudah dan cepat.
             </p>
 
             <div class="action-buttons">
-
-                @guest
-                    <a href="{{ route('login') }}" class="btn-primary">Login</a>
-                    <a href="{{ route('register') }}" class="btn-primary">Register</a>
-                @endguest
-
-                <!-- @auth
-                    <a href="{{ route('dashboard') }}" class="btn-primary">Go to Dashboard</a>
-                @endauth -->
-
+                <div class="btn-primary">Continue</div>
+                <div class="btn-primary">Sign Up</div>
             </div>
         </div>
 
         <div class="hero-img">
-            <img src="{{ asset('logo.png') }}" alt="illustration">
+            <img src="123.png" alt="illustration">
         </div>
 
     </div>
