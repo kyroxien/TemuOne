@@ -27,9 +27,8 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
-                    <!-- <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
-                    </flux:navlist.item> -->
+
+                    <!-- Dashboard -->
                     @php
                         if (auth()->user()->hasRole('super-admin')) {
                             $dashboardRoute = route('superadmin.dashboard');
@@ -39,10 +38,34 @@
                             $dashboardRoute = route('user.dashboard');
                         }
                     @endphp
-
+                    
                     <flux:navlist.item icon="home" :href="$dashboardRoute" :current="request()->is('*dashboard*')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:navlist.item>
+
+                    @if(auth()->user()->hasRole('super-admin'))
+                        <!-- Manage Blocked Users -->
+                        <flux:navlist.item 
+                            icon="user-minus" 
+                            :href="route('superadmin.blocked-users')" 
+                            :current="request()->is('super-admin/blocked-users*')" 
+                            wire:navigate
+                        >
+                            {{ __('Manage Blocked Users') }}
+                        </flux:navlist.item>
+
+                        <!-- Manage User Roles -->
+                        <flux:navlist.item 
+                            icon="user-circle" 
+                            :href="route('superadmin.manage-roles')" 
+                            :current="request()->is('super-admin/manage-roles*')" 
+                            wire:navigate
+                        >
+                            {{ __('Manage User Roles') }}
+                        </flux:navlist.item>
+                    @endif
+
+
                 </flux:navlist.group>
             </flux:navlist>
 

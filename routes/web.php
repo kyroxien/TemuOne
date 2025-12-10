@@ -39,6 +39,17 @@ Route::middleware(['auth'])->group(function () {
 # Middleware super-admin
 Route::middleware(['role:super-admin'])->group(function () {
     Route::get('/super-admin/dashboard', [SuperAdminDashboardController::class, 'index'])->name('superadmin.dashboard');
+    // Managed blocked user
+    Route::get('/super-admin/blocked-users', [SuperAdminDashboardController::class, 'blockedUsers'])
+        ->name('superadmin.blocked-users');
+    Route::post('/super-admin/unblock-user/{user}', [SuperAdminDashboardController::class, 'unblockUser'])
+        ->middleware(['auth','role:super-admin'])
+        ->name('superadmin.unblock-user');
+    // Update role user
+    Route::get('/super-admin/manage-roles', [SuperAdminDashboardController::class, 'manageRoles'])
+        ->name('superadmin.manage-roles');
+    Route::post('/super-admin/update-role/{user}', [SuperAdminDashboardController::class, 'updateRole'])
+        ->name('superadmin.update-role');
 });
 
 # Middleware admin

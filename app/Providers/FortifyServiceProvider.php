@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\LoginResponse; 
 use Laravel\Fortify\Contracts\RegisterResponse; 
+use Laravel\Fortify\Contracts\TwoFactorLoginResponse;
 
 
 class FortifyServiceProvider extends ServiceProvider
@@ -33,6 +34,41 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureViews();
         $this->configureRateLimiting();
 
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = \App\Models\User::where('email', $request->email)->first();
+
+            // Jika user tidak ditemukan → salah login seperti biasa
+            if (! $user) {
+                return null;
+            }
+
+            // Jika user sudah diblokir
+            if ($user->is_blocked) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    Fortify::username() => 'Akun Anda diblokir karena terlalu banyak percobaan login.',
+                ]);
+            }
+
+            // Jika password benar → reset failed_attempts
+            if (\Hash::check($request->password, $user->password)) {
+                $user->failed_attempts = 0;
+                $user->save();
+                return $user;
+            }
+
+            // Jika password salah → increment failed attempts
+            $user->failed_attempts += 1;
+
+            // Jika gagal 4 kali → blokir
+            if ($user->failed_attempts >= 4) {
+                $user->is_blocked = true;
+            }
+
+            $user->save();
+
+            return null; // tetap gagal login
+        });
+
         $this->app->singleton(LoginResponse::class, function () {
             return new class implements LoginResponse {
                 public function toResponse($request)
@@ -51,8 +87,28 @@ class FortifyServiceProvider extends ServiceProvider
                 }
             };
         });
+
         $this->app->singleton(RegisterResponse::class, function () {
             return new class implements RegisterResponse {
+                public function toResponse($request)
+                {
+                    $user = $request->user();
+
+                    if ($user->hasRole('super-admin')) {
+                        return redirect('/super-admin/dashboard');
+                    }
+
+                    if ($user->hasRole('admin')) {
+                        return redirect('/admin/dashboard');
+                    }
+
+                    return redirect('/user/dashboard');
+                }
+            };
+        });
+
+        $this->app->singleton(TwoFactorLoginResponse::class, function () {
+            return new class implements TwoFactorLoginResponse {
                 public function toResponse($request)
                 {
                     $user = $request->user();
