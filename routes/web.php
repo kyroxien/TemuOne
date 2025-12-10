@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
+use App\Http\Controllers\SuperAdminDashboardController;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\UserDashboardController;
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
@@ -29,4 +33,20 @@ Route::middleware(['auth'])->group(function () {
             ),
         )
         ->name('two-factor.show');
+});
+
+
+# Middleware super-admin
+Route::middleware(['role:super-admin'])->group(function () {
+    Route::get('/super-admin/dashboard', [SuperAdminDashboardController::class, 'index'])->name('superadmin.dashboard');
+});
+
+# Middleware admin
+Route::middleware(['role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+});
+
+# Middleware user
+Route::middleware(['role:user'])->group(function () {
+    Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
 });

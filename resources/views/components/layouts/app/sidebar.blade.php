@@ -7,13 +7,42 @@
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+            <!-- <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+                <x-app-logo />
+            </a> -->
+
+            @php
+                if (auth()->user()->hasRole('super-admin')) {
+                    $dashboardRoute = route('superadmin.dashboard');
+                } elseif (auth()->user()->hasRole('admin')) {
+                    $dashboardRoute = route('admin.dashboard');
+                } else {
+                    $dashboardRoute = route('user.dashboard');
+                }
+            @endphp
+
+            <a href="{{ $dashboardRoute }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
                 <x-app-logo />
             </a>
 
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    <!-- <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Dashboard') }}
+                    </flux:navlist.item> -->
+                    @php
+                        if (auth()->user()->hasRole('super-admin')) {
+                            $dashboardRoute = route('superadmin.dashboard');
+                        } elseif (auth()->user()->hasRole('admin')) {
+                            $dashboardRoute = route('admin.dashboard');
+                        } else {
+                            $dashboardRoute = route('user.dashboard');
+                        }
+                    @endphp
+
+                    <flux:navlist.item icon="home" :href="$dashboardRoute" :current="request()->is('*dashboard*')" wire:navigate>
+                        {{ __('Dashboard') }}
+                    </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
