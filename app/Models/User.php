@@ -26,8 +26,12 @@ class User extends Authenticatable
         'email',
         'password',
         'is_blocked',
-        'failed_attempts'
+        'failed_attempts',
+        'email_verification_code',
+        'email_verification_expires_at',
     ];
+
+    
 
     /**
      * The attributes that should be hidden for serialization.
@@ -49,7 +53,9 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            
             'email_verified_at' => 'datetime',
+            'email_verification_expires_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

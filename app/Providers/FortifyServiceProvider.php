@@ -92,17 +92,19 @@ class FortifyServiceProvider extends ServiceProvider
             return new class implements RegisterResponse {
                 public function toResponse($request)
                 {
-                    $user = $request->user();
+                    // $user = $request->user();
 
-                    if ($user->hasRole('super-admin')) {
-                        return redirect('/super-admin/dashboard');
-                    }
+                    // if ($user->hasRole('super-admin')) {
+                    //     return redirect('/super-admin/dashboard');
+                    // }
 
-                    if ($user->hasRole('admin')) {
-                        return redirect('/admin/dashboard');
-                    }
+                    // if ($user->hasRole('admin')) {
+                    //     return redirect('/admin/dashboard');
+                    // }
 
-                    return redirect('/user/dashboard');
+                    // return redirect('/user/dashboard');
+
+                    return redirect('/verify-email');
                 }
             };
         });
